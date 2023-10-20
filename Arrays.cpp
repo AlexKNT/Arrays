@@ -1,69 +1,49 @@
 ﻿#include <cstdio>
 #include <cstdlib>
 #include <ctime>
-#define LIGHTRED 91
-#define LIGHTGREEN 92
 
-void setTextColor(int color) {
-    printf("\033[%im", color);
-}
-
-void resetTextColor() {
-    printf("\033[0m");
-}
-
-void randomArray(float a[], int n) {
+void showArray(int a[], int n) {
     for (int i = 0; i < n; i++) {
-        a[i] = (rand() / float(RAND_MAX)) * 200 - 100;
-    }
-}
-
-void showArray(float a[], int n, int redPos, int greenPos) {
-    for (int i = 0; i < n; i++) {
-        if (i == redPos) {
-            setTextColor(LIGHTRED);
-        }
-        else if (i == greenPos) {
-            setTextColor(LIGHTGREEN);
-        }
-        printf("%6.2f%s", a[i], i % 10 == 9 ? "\n" : " ");
-        resetTextColor();
+        printf("%6d%s", a[i], i % 10 == 9 ? "\n" : " ");
     }
     if (n % 10) {
         printf("\n");
     }
 }
 
-int getMaxPos(float a[], int n) {
-    int max = 0;
-    for (int i = 1; i < n; i++) {
-        if (a[i] > a[max]) {
-            max = i;
-        }
+void smoothArray(int a[], int n) {
+    int sum = 0; // Initialize a variable to keep track of the sum of elements.
+
+    for (int i = 0; i < n; i++) {
+        sum += a[i]; // Add the current element to the sum.
+        a[i] = sum / (i + 1); // Calculate the mean by dividing the sum by the number of elements considered so far.
     }
-    return max;
 }
 
-int getMinPos(float a[], int n) {
-    int min = 0;
-    for (int i = 1; i < n; i++) {
-        if (a[i] < a[min]) {
-            min = i;
-        }
+void getUserInput(int arr[], int num_of_elements_in_arr) {
+    for (int i = 0; i < num_of_elements_in_arr; i++) {
+        printf("Enter element %d: ", i + 1);
+        scanf_s("%d", &arr[i]);
     }
-    return min;
 }
 
 int main() {
-    srand((unsigned)time(NULL)); // Inicializēt gadījumskaitļu ģeneratoru
-    float a[1000];
-    int n;
+    srand((unsigned)time(NULL)); // Initialize the random number generator.
+
+    int arr[1000];
+    int numberOfElementsInArray;
     printf("n = ");
-    scanf_s("%i", &n);
-    randomArray(a, n);
-    int maxPos = getMaxPos(a, n);
-    int minPos = getMinPos(a, n);
-    showArray(a, n, maxPos, minPos);
+    scanf_s("%i", &numberOfElementsInArray);
+    getUserInput(arr, numberOfElementsInArray);
+
+    printf("Original Array:\n");
+    showArray(arr, numberOfElementsInArray); // Display the original array.
+
+    smoothArray(arr, numberOfElementsInArray); // Call the smoothing function.
+
+    printf("Smoothed Array:\n");
+    showArray(arr, numberOfElementsInArray); // Display the smoothed array.
+
     printf("\n");
     return 0;
 }
